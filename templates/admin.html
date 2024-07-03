@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for item in values %}
+        <p>User: {{item.username}} Password: {{item.password}}</p>
+    {% endfor %}
+{% endblock %}

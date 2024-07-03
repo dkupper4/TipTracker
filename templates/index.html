@@ -2,7 +2,7 @@
 
 {% block content %}
 </style>
-<h1>Dashboard</h1>
+<h1>Welcome {{current_user.username}}!</h1>
 {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <ul>
@@ -20,6 +20,7 @@
       <tr>
         <th scope="col">Date</th>
         <th scope="col">Amount</th>
+        <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
