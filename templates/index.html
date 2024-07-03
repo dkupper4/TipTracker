@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome, {{ current_user.username }}!</h1>
+<a href="{{ url_for('add_tip') }}">Add Tip</a>
+<ul>
+  {% for tip in tips %}
+    <li>{{ tip.date }}: ${{ tip.amount }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
