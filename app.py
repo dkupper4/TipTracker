@@ -59,13 +59,17 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('You have been logged out', 'info')
     return redirect(url_for('login'))
 
 @app.route('/')
 @login_required
 def index():
     tips = Tip.query.filter_by(user_id=current_user.id).all()
-    return render_template('index.html', tips=tips)
+    total_tips = 0
+    for tip in tips:
+        total_tips += tip.amount
+    return render_template('index.html', tips=tips, total_tips = total_tips)
 
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -76,8 +80,8 @@ def add_tip():
         
         try:
             date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            amount = float(amount)
         except ValueError:
-            flash('Invalid date format. Please use YYYY-MM-DD.')
             return redirect(url_for('add_tip'))
         
         new_tip = Tip(date=date, amount=float(amount), user_id=current_user.id)
@@ -87,5 +91,19 @@ def add_tip():
     
     return render_template('add_tip.html')
 
+@app.route('/remove', methods=['GET','POST'])
+@login_required
+def remove_tip():
+    tip_id = request.form.get('tip_id')
+    tip = Tip.query.filter_by(id=tip_id, user_id=current_user.id).first()
+    if tip:
+        db.session.delete(tip)
+        db.session.commit()
+        flash('Tip removed successfully','success')
+    else:
+        flash('Tip not found')
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

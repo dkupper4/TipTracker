@@ -1,10 +1,43 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>Welcome, {{ current_user.username }}!</h1>
-<a href="{{ url_for('add_tip') }}">Add Tip</a>
+</style>
+<h1>Dashboard</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 <ul>
-  {% for tip in tips %}
-    <li>{{ tip.date }}: ${{ tip.amount }}</li>
-  {% endfor %}
+  <br>
+  <h2>Total Cash Tips: ${{total_tips}}</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      </tr>
+      {% for tip in tips %}
+      <tr> 
+        <td>{{ tip.date }}</td> 
+        <td>${{ tip.amount }}</td>
+        <td>
+        <form action="{{ url_for('remove_tip') }}" method="POST">
+          <input type="hidden" name="tip_id" value="{{ tip.id }}">
+          <button type="submit">Remove</button>
+        </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </ul>
+<a href="{{ url_for('add_tip') }}">Add Tip</a>
 {% endblock %}

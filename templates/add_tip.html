@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 <h1>Add Tip</h1>
 <form method="POST">
   <label for="date">Date:</label>
-  <input type="date" id="date" name="date">
+  <input type="date" id="date" name="date" value="{{ current_date }}" required>
   <label for="amount">Amount:</label>
   <input type="number" step="0.01" id="amount" name="amount">
   <input type="submit" value="Add Tip">
