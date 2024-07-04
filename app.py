@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user,current_user
-from datetime import datetime
+from datetime import datetime, timedelta
+import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'supersecretkey'
+app.config['SECRET_KEY'] = 'supersecretkey1807'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tips.db'
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -66,10 +67,23 @@ def logout():
 @login_required
 def index():
     tips = Tip.query.filter_by(user_id=current_user.id).all()
-    total_tips = 0
+    total_tips = sum(tip.amount for tip in tips)
+
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+
+    tips_by_day = {i: 0 for i in range(7)}
+
     for tip in tips:
-        total_tips += tip.amount
-    return render_template('index.html', tips=tips, total_tips = total_tips)
+        if start_of_week <= tip.date <= start_of_week + timedelta(days=6):
+            weekday = tip.date.weekday()
+            tips_by_day[weekday] += tip.amount
+
+    tips_by_day_lst = [tips_by_day[i] for i in range(7)]
+
+    print("tips_by_day_lst:", tips_by_day_lst)  # Debug statement
+
+    return render_template('index.html', tips=tips, total_tips = total_tips, tips_by_day_json=json.dumps(tips_by_day_lst))
 
 @app.route('/add', methods=['GET', 'POST'])
 @login_required

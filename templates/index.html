@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-</style>
+
 <h1>Welcome {{current_user.username}}!</h1>
 {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -12,6 +12,46 @@
             </ul>
         {% endif %}
     {% endwith %}
+<br>
+<div class="col-xs-10 col-sm-6 col-md-6">
+    <div class="card card-style mb-2">
+        <div class="card-body">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="Weekly_tips"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% block javascript%}
+<script>
+      let tipsWeek = JSON.parse({{ tips_by_day_json | tojson }})
+      const ctx = document.getElementById('Weekly_tips');
+          
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'],
+              datasets: [{
+                label: 'Weekly Tips',
+                data: tipsWeek,
+                borderWidth: 1,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+</script>
+{% endblock %}
+
 <ul>
   <br>
   <h2>Total Cash Tips: ${{total_tips}}</h2>
