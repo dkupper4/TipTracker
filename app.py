@@ -42,7 +42,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return redirect(url_for('index'))
+        return redirect(url_for('dashboard'))
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -53,7 +53,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard'))
     return render_template('login.html')
 
 @app.route('/logout')
@@ -96,14 +96,13 @@ def add_tip():
             date = datetime.strptime(date_str, '%Y-%m-%d').date()
             amount = float(amount)
         except ValueError:
-            return redirect(url_for('add_tip'))
+            return redirect(url_for('dashboard'))
         
         new_tip = Tip(date=date, amount=float(amount), user_id=current_user.id)
         db.session.add(new_tip)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('dashboard'))
     
-    return render_template('add_tip.html')
 
 @app.route('/remove', methods=['GET','POST'])
 @login_required
@@ -117,12 +116,30 @@ def remove_tip():
     else:
         flash('Tip not found')
     current_date = datetime.now().strftime('%Y-%m-%d')
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard'))
 
 @app.route("/admin")
 def view():
     return render_template('admin.html', values=User.query.all())
 
+@app.route('/dashboard')
+def dashboard():
+    tips = Tip.query.filter_by(user_id=current_user.id).all()
+    total_tips = sum(tip.amount for tip in tips)
+
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+
+    tips_by_day = {i: 0 for i in range(7)}
+
+    for tip in tips:
+        if start_of_week <= tip.date <= start_of_week + timedelta(days=6):
+            weekday = tip.date.weekday()
+            tips_by_day[weekday] += tip.amount
+
+    tips_by_day_lst = [tips_by_day[i] for i in range(7)]
+
+    return render_template('dashboard.html', tips=tips, total_tips = total_tips, tips_by_day_json=json.dumps(tips_by_day_lst))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!--Top-->
+    <div class="container">
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header bg-dark text-white">
+              Total Tips
+            </div>
+            <div class="card-body">
+              <marquee behavior="" direction="">
+                <h1 class="my-3">${{total_tips}}</h3>
+              </marquee>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header bg-dark text-white">
+              Statistics
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <a class="text-decoration-none text-dark" href="">
+                    <div class="card my-card shadow text-center p-3">
+                      <h4>Staff</h4>
+                      <h3>4</h3>
+                    </div>
+                  </a>
+                </div>
+                <div class="col-md-4">
+                  <a class="text-decoration-none text-dark" href="">
+                    <div class="card my-card shadow text-center p-3">
+                      <h4>Staff</h4>
+                      <h3>4</h3>
+                    </div>
+                  </a>
+                </div>
+                <div class="col-md-4">
+                  <a class="text-decoration-none text-dark" href="">
+                    <div class="card my-card shadow text-center p-3">
+                      <h4>Staff</h4>
+                      <h3>4</h3>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <!--End Top-->
+
+    <!--Graphs-->
+    <div class="container">
+      <div class="row my-5">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">Weekly Tips</h5>
+              <canvas id="Weekly1" width="400" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center">Average Tips by Day </h5>
+              <canvas id="Weekly2" width="400" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% block javascript%}
+    <script>
+      let tipsWeek = JSON.parse({{ tips_by_day_json | tojson }})
+  
+      const ctx1 = document.getElementById('Weekly1');
+      new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          datasets: [{
+            label: 'Weekly Tips',
+            data: tipsWeek,
+            borderWidth: .1,
+            backgroundColor: 'rgba(75, 192, 192, .4)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+  
+      const ctx2 = document.getElementById('Weekly2');
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          datasets: [{
+            label: 'Weekly Tips',
+            data: tipsWeek,
+            borderWidth: .1,
+            backgroundColor: 'rgba(75, 192, 192, .4)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    </script>
+    {% endblock %}
+    <!--End Graphs-->
+
+    <!--Table-->
+    <div class="container">
+      <div class="row my-5">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Recent Tips</h2>
+              <ul>
+                <br>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    </tr>
+                    {% for tip in tips %}
+                    <tr> 
+                      <td>{{ tip.date }}</td> 
+                      <td>${{ tip.amount }}</td>
+                      <td>
+                      <form action="{{ url_for('remove_tip') }}" method="POST">
+                        <input type="hidden" name="tip_id" value="{{ tip.id }}">
+                        <button type="submit">Remove</button>
+                      </form>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Table-->
+
+{% endblock %}
+    
