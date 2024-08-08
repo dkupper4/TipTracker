@@ -28,7 +28,7 @@ class Tip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # with app.app_context():
-    # db.create_all()
+#     db.create_all()
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
