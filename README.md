@@ -1,5 +1,5 @@
 # $erve Tip Tracker
-TipTracker is a Flask-based web application designed to help users track and analyze their daily cash tips. The application allows users to securely register, log in, and manage their tip records efficiently. It provides features like weekly insights, total earnings, and a user-friendly dashboard for visualization and data entry.
+$erve is a Flask-based web application designed to help users track and analyze their daily cash tips. The application allows users to securely register, log in, and manage their tip records efficiently. It provides features like weekly insights, total earnings, and a user-friendly dashboard for visualization and data entry.
 
 Features
 * User Authentication: Secure registration, login, and logout functionalities using Flask-Login.
@@ -10,7 +10,7 @@ Features
   * View total tips for the current week.
   * Weekly breakdown of tips displayed in an interactive dashboard using JSON-powered visualizations.
   * Admin Interface: Separate view to manage user accounts (placeholder for future development).
-  * Responsive Design: Intuitive and easy-to-navigate HTML templates (not included in this repository).
+  * Responsive Design: Intuitive and easy-to-navigate HTML web pages.
 * Technologies
   * Backend: Flask for routing and backend logic.
   * Database: SQLite for data storage with SQLAlchemy ORM for seamless integration.
@@ -18,5 +18,7 @@ Features
   * Frontend: HTML templates for rendering user interfaces.
   * Visualization: JSON data structures for visualizing weekly tip trends.
   * Deployment: Flask development server for testing.
+ 
+This project was developed as a means to develop my programming skills while building a useful tool to track my cash tip earnings as a bartender.
   
   
